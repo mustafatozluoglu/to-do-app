@@ -12,7 +12,7 @@ body {
 }
 
 .input-container {
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   display: flex;
   justify-content: center;
   gap: 10px;
@@ -308,6 +308,7 @@ body {
   flex-direction: column;
   align-items: center;
   width: 100%;
+  margin-top: 10px;
 }
 
 .clear-all-btn {
@@ -338,11 +339,11 @@ body {
 
 /* Empty State Styles */
 .task-list-empty {
-  padding: 40px 20px;
+  padding: 30px 20px;
   text-align: center;
   background: #2d2d2d;
   border-radius: 12px;
-  margin: 20px auto;
+  margin: 10px auto;
   max-width: 500px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -445,5 +446,351 @@ body {
 
   .empty-state-tips li {
     font-size: 14px;
+  }
+}
+
+.app-layout {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.menu-toggle {
+  position: fixed;
+  left: 280px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #2d2d2d;
+  width: 24px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 0 6px 6px 0;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  border: 1px solid #444;
+  border-left: none;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.menu-toggle:hover {
+  background: #3d3d3d;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+}
+
+.menu-toggle:active {
+  background: #2d2d2d;
+}
+
+.menu-toggle i {
+  color: #fff;
+  font-size: 14px;
+  transition: transform 0.3s ease;
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.task-list-selector {
+  width: 280px;
+  background: #2d2d2d;
+  height: 100vh;
+  padding: 20px;
+  overflow-y: auto;
+  border-right: 1px solid #444;
+  position: fixed;
+  left: 0;
+  top: 0;
+  transition: all 0.3s ease;
+  z-index: 999;
+}
+
+.task-content {
+  flex: 1;
+  padding: 20px 40px;
+  margin-left: 280px;
+  height: 100vh;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+}
+
+.task-content h2 {
+  margin: 0 0 20px 0;
+  color: #fff;
+  font-size: 24px;
+}
+
+/* Collapsed state styles */
+.menu-collapsed .task-list-selector {
+  transform: translateX(-280px);
+}
+
+.menu-collapsed .task-content {
+  margin-left: 0;
+}
+
+.menu-collapsed .menu-toggle {
+  left: 0;
+}
+
+/* Update responsive styles */
+@media (max-width: 768px) {
+  .task-list-selector {
+    width: 100%;
+    height: auto;
+    position: relative;
+    transform: none;
+  }
+
+  .task-content {
+    margin-left: 0;
+    padding: 15px;
+    height: auto;
+  }
+
+  .menu-toggle {
+    display: none; /* Hide toggle button on mobile */
+  }
+
+  .app-layout {
+    flex-direction: column;
+  }
+}
+
+.list-selector-header {
+  margin-bottom: 30px;
+  position: sticky;
+  top: 0;
+  background: #2d2d2d;
+  padding: 10px 0;
+  z-index: 10;
+}
+
+.list-selector-header h2 {
+  color: #fff;
+  margin-bottom: 15px;
+  font-size: 24px;
+}
+
+.new-list-input {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.new-list-input input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 14px;
+}
+
+.new-list-input button {
+  padding: 8px 16px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.new-list-input button:hover {
+  background: #0056b3;
+}
+
+.lists-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.list-item {
+  background: #1a1a1a;
+  padding: 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  width: 100%;
+  min-height: 45px;
+  display: flex;
+  align-items: center;
+}
+
+.list-item:hover {
+  background: #252525;
+}
+
+.list-item.active {
+  background: #007bff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.list-item-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list-name {
+  color: #fff;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.list-name::before {
+  content: '📋';
+  font-size: 16px;
+}
+
+.list-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.list-item:hover .list-actions {
+  opacity: 1;
+}
+
+.list-actions button {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.list-actions button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.list-edit-form {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.list-edit-form input {
+  flex: 1;
+  padding: 6px 8px;
+  border-radius: 4px;
+  border: 1px solid #444;
+  background: #2d2d2d;
+  color: #fff;
+  font-size: 14px;
+  min-width: 0;
+}
+
+.list-edit-form button {
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  white-space: nowrap;
+  min-width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.list-edit-form button:first-of-type {
+  background: #28a745;
+  color: white;
+}
+
+.list-edit-form button:first-of-type:hover {
+  background: #218838;
+}
+
+.list-edit-form button:last-of-type {
+  background: #dc3545;
+  color: white;
+}
+
+.list-edit-form button:last-of-type:hover {
+  background: #c82333;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .app-layout {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .task-list-selector {
+    width: 100%;
+    height: auto;
+    position: relative;
+    border-right: none;
+    border-bottom: 1px solid #444;
+  }
+
+  .task-content {
+    margin-left: 0;
+    padding: 20px;
+    height: auto;
+  }
+
+  .list-selector-header {
+    position: relative;
+  }
+}
+
+/* Scrollbar styles */
+.task-list-selector::-webkit-scrollbar {
+  width: 8px;
+}
+
+.task-list-selector::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+.task-list-selector::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 4px;
+}
+
+.task-list-selector::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Add these styles for the error message */
+.list-name-error {
+  color: #ff4444;
+  font-size: 14px;
+  margin-top: 8px;
+  padding: 8px;
+  background: rgba(255, 68, 68, 0.1);
+  border-radius: 4px;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
