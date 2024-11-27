@@ -1,131 +1,71 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import './App.css';
+import TaskInput from './components/TaskInput';
+import TaskList from './components/TaskList';
+import Notification from './components/Notification';
+import useTasks from './hooks/useTasks';
+import useNotification from './hooks/useNotification';
+import { ANIMATION_DURATION } from './constants';
 
 function App() {
-  const [task, setTask] = useState('');
-  const [tasks, setTasks] = useState(() => {
-    const savedTasks = localStorage.getItem('tasks');
-    return savedTasks ? JSON.parse(savedTasks) : [];
-  });
-  const [notification, setNotification] = useState('');
+  const { 
+    tasks, 
+    addTask, 
+    isTaskDuplicate,
+    toggleTask, 
+    removeTask, 
+    clearAllTasks 
+  } = useTasks();
 
-  useEffect(() => {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-  }, [tasks]);
+  const { 
+    notification, 
+    showNotification, 
+    clearNotification 
+  } = useNotification();
 
-  const addTask = () => {
-    if (task.trim() === '') return;
-
-    const isDuplicate = tasks.some(t => t.text.toLowerCase() === task.toLowerCase());
-    if (isDuplicate) {
-      if (notification) {
-        setNotification('');
-        setTimeout(() => {
-          setNotification('Task already exists!');
-        }, 100);
-      } else {
-        setNotification('Task already exists!');
-      }
-      
-      setTimeout(() => {
-        const notificationElement = document.querySelector('.notification');
-        if (notificationElement) {
-          notificationElement.classList.add('hiding');
-          setTimeout(() => setNotification(''), 500);
-        }
-      }, 3000);
+  // Handle adding new task
+  const handleAddTask = (taskText) => {
+    if (isTaskDuplicate(taskText)) {
+      showNotification('Task already exists!');
       return;
     }
-
-    setTasks([...tasks, { text: task, completed: false }]);
-    setTask('');
+    addTask(taskText);
   };
 
-  const toggleTask = (index) => {
-    const newTasks = tasks.map((task, i) => {
-      if (i === index) {
-        return { ...task, completed: !task.completed };
-      }
-      return task;
-    });
-    setTasks(newTasks);
-  };
-
-  const removeTask = (index) => {
-    const taskElement = document.querySelectorAll('.task-item')[index];
-    taskElement.classList.add('removing');
-    setTimeout(() => {
-      const newTasks = tasks.filter((_, i) => i !== index);
-      setTasks(newTasks);
-    }, 300);
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      addTask();
+  // Handle removing task with animation
+  const handleRemoveTask = (taskId) => {
+    const taskElement = document.querySelector(`[data-task-id="${taskId}"]`);
+    if (taskElement) {
+      taskElement.classList.add('removing');
+      setTimeout(() => removeTask(taskId), ANIMATION_DURATION);
     }
   };
 
-  const closeNotification = () => {
-    const notificationElement = document.querySelector('.notification');
-    if (notificationElement) {
-      notificationElement.classList.add('hiding');
-      setTimeout(() => setNotification(''), 500);
+  // Handle clearing all tasks with animation
+  const handleClearAll = () => {
+    const taskList = document.querySelector('.task-list');
+    if (taskList) {
+      taskList.classList.add('clearing');
+      setTimeout(() => {
+        clearAllTasks();
+        taskList.classList.remove('clearing');
+      }, ANIMATION_DURATION);
     }
   };
 
   return (
     <div className="App">
-      {notification && (
-        <div className="notification-container">
-          <div className="notification">
-            <div className="notification-content">
-              <i className="fas fa-exclamation-circle"></i>
-              <span>{notification}</span>
-            </div>
-            <button className="notification-close" onClick={closeNotification}>
-              <i className="fas fa-times"></i>
-            </button>
-          </div>
-        </div>
-      )}
-      <div className="input-container">
-        <input
-          type="text"
-          value={task}
-          onChange={(e) => setTask(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Add a new task"
-        />
-        <button onClick={addTask}>Add</button>
-      </div>
-
-      <div className="task-list">
-        {tasks
-          .sort((a, b) => {
-            if (a.completed && !b.completed) return 1;
-            if (!a.completed && b.completed) return -1;
-            return 0;
-          })
-          .map((taskItem, index) => (
-            <div key={index} className={`task-item ${taskItem.completed ? 'completed' : ''}`}>
-              <div className="task-text">{taskItem.text}</div>
-              <div className="task-actions">
-                <label className="checkbox-container">
-                  <input 
-                    type="checkbox"
-                    checked={taskItem.completed}
-                    onChange={() => toggleTask(index)}
-                  />
-                  <span className="checkmark"></span>
-                </label>
-                <button className="delete-btn" onClick={() => removeTask(index)}>
-                  <i className="fas fa-trash-alt"></i>
-                </button>
-              </div>
-            </div>
-          ))}
-      </div>
+      <Notification 
+        message={notification} 
+        onClose={clearNotification} 
+      />
+      <TaskInput onAddTask={handleAddTask} />
+      <TaskList 
+        tasks={tasks}
+        onToggleTask={toggleTask}
+        onRemoveTask={handleRemoveTask}
+        onClearAll={handleClearAll}
+      />
     </div>
   );
 }
