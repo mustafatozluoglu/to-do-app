@@ -103,6 +103,66 @@
   color: #0056b3;
 }
 
+.validation-info {
+  background: #2d2d2d;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.validation-info h3 {
+  color: #fff;
+  font-size: 14px;
+  margin: 0 0 10px 0;
+}
+
+.validation-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.validation-info li {
+  font-size: 13px;
+  margin: 5px 0;
+  padding-left: 20px;
+  position: relative;
+}
+
+.validation-info li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.validation-info li.valid {
+  color: #4caf50;
+}
+
+.validation-info li.invalid {
+  color: #f44336;
+}
+
+.validation-info li.valid::before {
+  content: '✓';
+  color: #4caf50;
+}
+
+.validation-info li.invalid::before {
+  content: '✗';
+  color: #f44336;
+}
+
+input.invalid {
+  border-color: #f44336 !important;
+}
+
 @keyframes slideUp {
   from {
     opacity: 0;
